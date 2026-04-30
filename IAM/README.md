@@ -17,3 +17,7 @@
 ## Notes
 - Always use IAM user, not root
 - Use least privilege in real environments (not full admin)
+
+## Screenshot
+
+![IAM User Created](./iam-user-created.png)
