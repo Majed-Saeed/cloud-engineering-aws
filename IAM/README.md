@@ -21,3 +21,7 @@
 ## Screenshot
 
 ![IAM User Created](screenshots/iam-user-created.png)
+
+## Related Work
+
+- [AWS CLI Configuration](aws-cli.md)
