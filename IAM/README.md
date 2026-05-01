@@ -20,4 +20,4 @@
 
 ## Screenshot
 
-![IAM User Created](./iam-user-created.png)
+![IAM User Created](screenshots/iam-user-created.png)
