@@ -1,199 +1,114 @@
-# ☁️ AWS Global Infrastructure
-### Regions · Availability Zones · Edge Locations
+# ☁️ AWS Global Infrastructure — Regions, AZs & Edge Locations
 
-[![AWS](https://img.shields.io/badge/AWS-Cloud_Architecture-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)](https://aws.amazon.com)
-[![SAA-C03](https://img.shields.io/badge/SAA--C03-Exam_Relevant-232F3E?style=for-the-badge&logo=amazonaws)](https://aws.amazon.com/certification/certified-solutions-architect-associate/)
-[![CLF-C02](https://img.shields.io/badge/CLF--C02-Exam_Relevant-232F3E?style=for-the-badge&logo=amazonaws)](https://aws.amazon.com/certification/certified-cloud-practitioner/)
-[![Study Notes](https://img.shields.io/badge/Type-Study_Notes-blue?style=for-the-badge)](.)
+![AWS](https://img.shields.io/badge/AWS-Cloud_Architecture-FF9900?style=flat&logo=amazonaws&logoColor=white)
+![Level](https://img.shields.io/badge/Level-Foundations-blue)
+![Focus](https://img.shields.io/badge/Focus-Architecture-green)
 
-> A deep-dive reference on how AWS distributes infrastructure globally using **Regions**, **Availability Zones**, and **Edge Locations** — with architecture patterns, design decisions, and exam-ready takeaways.
+> Understanding how AWS is structured globally is essential for designing highly available, fault-tolerant, and scalable systems.
 
 ---
 
-## 📊 By the numbers
+## 🗺️ Overview
 
-| Metric | Count |
-|--------|-------|
-| Launched Regions | 33+ |
-| Availability Zones | 105+ |
-| Edge / PoP locations | 600+ |
-| Countries with edge presence | 90+ |
-
----
-
-## 🗺️ Architecture overview
+AWS infrastructure is built in layers to deliver reliability and performance worldwide.
 
 ```
-                        ┌────────────────────────────────────────┐
-                        │   AWS Region: ap-southeast-1           │
-                        │   (Singapore)                          │
-                        │                                        │
-                        │  ┌──────────┐ ┌──────────┐ ┌────────┐ │
-                        │  │  AZ-1a   │ │  AZ-1b   │ │ AZ-1c  │ │
-                        │  │ Primary  │ │ Standby  │ │Tertiary│ │
-                        │  │ EC2, RDS │ │ EC2, RDS │ │EC2, $  │ │
-                        │  └──────────┘ └──────────┘ └────────┘ │
-                        └────────────────────────────────────────┘
-                                           ▲
-                                           │ origin fetch (cache miss)
-                                           │
-[User in KL] ──→ [Edge Location: KL PoP] ──┘
-                  CloudFront · Route 53
-                  Shield · WAF
+User → Edge Location (Cache)
+              ↓
+        AWS Region (e.g. ap-southeast-1)
+            ├── AZ-1a
+            ├── AZ-1b
+            └── AZ-1c
 ```
-
-**Request flow:** User → nearest Edge PoP → (on cache miss) → Region → target AZ
 
 ---
 
 ## 📍 Region
 
-A **Region** is a distinct geographic area, fully isolated from all other regions. AWS never replicates your data between regions without explicit configuration.
+A **Region** is a geographic location where AWS clusters multiple data centers.
 
-### Key properties
-- Contains **2–6 Availability Zones** per region
-- Complete isolation — separate control plane, networking, and power
-- Data stays inside the region unless you explicitly configure cross-region replication
+- Fully isolated from other regions
+- Contains multiple Availability Zones
+- Services are deployed at the region level
 
-### How to choose a region
-
-| Factor | Considerations |
-|--------|---------------|
-| **Latency** | Deploy close to your users. Use Route 53 latency routing to measure before committing. |
-| **Compliance** | GDPR → EU regions. PDPA (Malaysia), PDPB (India) may dictate choices for APAC workloads. |
-| **Service availability** | Not all services launch in every region simultaneously — verify before designing. |
-| **Cost** | EC2 + data transfer pricing varies up to 20–30% between regions. `us-east-1` is typically cheapest. |
-
-> **Exam tip:** Region selection is driven by latency, compliance, service availability, and cost — not by the number of edge locations near it.
+### Used for:
+- Data residency & compliance  
+- Disaster recovery (Multi-Region)  
+- Latency optimization  
 
 ---
 
 ## 🏢 Availability Zone (AZ)
 
-An **AZ** is one or more physical data centers inside a region with **independent power, cooling, and networking**. AZs in the same region are connected via low-latency private fibre (< 2ms).
+An **Availability Zone** is one or more data centers inside a Region.
 
-### Key properties
-- Isolated failure domain — power or networking failure in one AZ does **not** affect others
-- The letter suffix (1a, 1b, 1c) is account-specific — your `us-east-1a` may be physically different to someone else's
-- Foundation of the **Multi-AZ high availability** pattern
+- Independent power, cooling, networking
+- Connected via low-latency links
+- Designed for fault isolation
 
-### Multi-AZ reference architecture
-
-```
-                    ┌─── Application Load Balancer ───┐
-                    │                                 │
-               ┌────▼────┐                     ┌─────▼───┐
-               │  AZ-1a  │                     │  AZ-1b  │
-               │  EC2 x2 │                     │  EC2 x2 │
-               │ RDS Pri │◄──── sync repl ────►│ RDS Std │
-               └─────────┘                     └─────────┘
-```
-
-> **Exam tip:** RDS Multi-AZ is for **availability**, not performance. The standby does not serve read traffic. Use read replicas for read scaling.
+### Used for:
+- High availability (Multi-AZ)
+- Redundancy within a region
 
 ---
 
 ## ⚡ Edge Location
 
-An **Edge Location** (Point of Presence) is a site that caches content and runs edge services close to users — completely separate from Regions and AZs.
+An **Edge Location** is a global point of presence used for caching content closer to users.
 
-### Key properties
-- 600+ locations across 90+ countries — far more than Regions
-- Hosts **CloudFront** CDN, **Route 53**, **AWS Shield**, **WAF**, **Lambda@Edge**, and **Global Accelerator**
-- Reduces latency by serving cached responses without a round-trip to the origin region
+- Used by CloudFront (CDN)
+- Reduces latency significantly
+- Not part of VPC or AZ structure
 
-### Services by edge component
-
-| Service | What it does at the edge |
-|---------|--------------------------|
-| `CloudFront` | Caches static and dynamic content at the nearest PoP |
-| `Lambda@Edge` | Runs Node.js / Python at the PoP — auth, A/B testing, header manipulation |
-| `Route 53` | Responds to DNS queries from the nearest PoP globally |
-| `AWS Shield` | Absorbs DDoS traffic at the edge before it reaches your origin |
-| `Global Accelerator` | Routes TCP/UDP through AWS backbone from the nearest PoP |
+### Used for:
+- Content delivery
+- DNS (Route 53)
+- DDoS protection (AWS Shield)
 
 ---
 
-## 📐 Design patterns
+## 📊 Comparison
 
-### Pattern 1 — Multi-AZ (high availability)
-
-**Goal:** Survive a data center failure within a region.
-
-```
-ALB → EC2 (AZ-1a) + EC2 (AZ-1b)
-          ↓
-    RDS Primary (AZ-1a) ←──sync──→ RDS Standby (AZ-1b)
-```
-
-- Auto Scaling maintains capacity if one AZ goes dark
-- ALB health checks stop routing to unhealthy targets automatically
-- RDS failover DNS update typically completes in 60–120 seconds
-
-### Pattern 2 — Multi-Region (disaster recovery)
-
-**Goal:** Survive an entire region going offline.
-
-| Strategy | RTO | RPO | Cost |
-|----------|-----|-----|------|
-| Backup & restore | Hours | Hours | $ |
-| Pilot light | Minutes–hours | Minutes | $$ |
-| Warm standby | Minutes | Seconds | $$$ |
-| Active–active | Seconds | Near-zero | $$$$ |
-
-```
-Route 53 health check
-        │
-        ├──→ us-east-1 (primary)
-        │       S3 CRR ──────────────┐
-        │       DynamoDB Global ─────┤
-        │                            ▼
-        └──→ eu-west-1 (DR)  ←── replicated data
-```
-
-### Pattern 3 — Edge caching (performance)
-
-**Goal:** Serve content with sub-10ms response times globally.
-
-```
-User → CloudFront PoP
-            │
-            ├── Cache HIT  →  instant response (no origin roundtrip)
-            │
-            └── Cache MISS → fetch from origin → cache → respond
-                              (S3 bucket / ALB / API Gateway)
-```
+| Component | Scope | Purpose | Example Services |
+|----------|------|--------|------------------|
+| Region | Global area | Isolation & compliance | EC2, RDS, S3 |
+| AZ | Inside Region | High availability | EC2, RDS Multi-AZ |
+| Edge | Global edge | Performance | CloudFront, Route 53 |
 
 ---
 
-## 🧠 Key takeaways
+## 🧠 Key Takeaways
 
-```
-Multi-AZ      → within one region  → protects against hardware / data center failure
-Multi-Region  → across regions     → protects against regional outages / disaster recovery
-Edge          → independent PoPs   → faster content delivery, not HA or DR
-```
-
-- **AZs are not the same as Regions** — one region has multiple AZs
-- **Edge locations are not AZs** — they don't run your EC2 or RDS workloads
-- **S3 is regional** — it replicates across AZs automatically but not across regions
-- **IAM is global** — not bound to any region or AZ
-- **RDS Multi-AZ ≠ Multi-Region** — standby is in the same region, different AZ
+- Multi-AZ → protects against **data center failure**
+- Multi-Region → protects against **regional outages**
+- Edge Locations → improve **user experience & latency**
 
 ---
 
-## 🔗 Related topics
+## 🛠️ Real Scenario
 
-`CloudFront` · `Route 53 Latency Routing` · `RDS Multi-AZ vs Read Replicas` · `EC2 Auto Scaling across AZs` · `Global Accelerator` · `AWS Local Zones` · `AWS Wavelength` · `AWS Outposts` · `S3 Cross-Region Replication` · `DynamoDB Global Tables`
+Production web application:
+
+- Deployed across 2 AZs  
+- Uses Application Load Balancer  
+- Auto Scaling enabled  
+- Database in RDS Multi-AZ  
+
+➡️ If one AZ fails → application remains available
 
 ---
 
-## 📚 Resources
+## 🔗 Related
 
-- [AWS Global Infrastructure map](https://aws.amazon.com/about-aws/global-infrastructure/)
-- [Amazon CloudFront edge locations](https://aws.amazon.com/cloudfront/features/)
-- [SAA-C03 Exam Guide](https://aws.amazon.com/certification/certified-solutions-architect-associate/)
+`Multi-AZ Architecture` · `Auto Scaling` · `Load Balancing` · `CloudFront` · `Route 53`
 
 ---
 
-*Part of my AWS Solutions Architect study notes · PRs and corrections welcome*
+## 🚀 Summary
+
+AWS global infrastructure is designed to:
+- Isolate failures
+- Scale globally
+- Deliver low-latency experiences
+
+Understanding this is the foundation of every real AWS architecture.
