@@ -11,11 +11,6 @@
 
 ## Screenshots
 
-### Buckets list
-![Buckets list](./screenshots/01-buckets-list.png)
-
-### Bucket overview
-![Bucket overview](./screenshots/02-bucket-overview.png)
-
-### Object details
-![Object details](./screenshots/03-object-upload.png)
+![Buckets list](./S3/screenshots/01-buckets-list.png)
+![Bucket overview](./S3/screenshots/02-bucket-overview.png)
+![Object details](./S3/screenshots/03-object-upload.png)
