@@ -1,17 +1,24 @@
 # EC2 Deployment
 
-## What I did
-- Launched EC2 instance
-- Used Amazon Linux AMI
-- Instance type: t3.micro
+## 1. Manual EC2 (Old)
+
+- Launched EC2 manually
+- Used Amazon Linux
 - Connected using SSH
 
-## Steps
-1. Go to EC2
-2. Click Launch Instance
-3. Choose Amazon Linux
-4. Choose t3.micro
-5. Launch
+---
 
-## Access
-ssh -i key.pem ec2-user@YOUR-IP
+## 2. EC2 using CloudFormation (NEW)
+
+### What I did
+- Created EC2 using CloudFormation
+- Attached IAM Role for SSM
+- Connected using Session Manager (no SSH)
+
+### Files
+- Template: templates/ec2-ssm.yaml
+
+### Screenshots
+![resources](./screenshots/resources.png)
+![outputs](./screenshots/outputs.png)
+![terminal](./screenshots/terminal.png)
