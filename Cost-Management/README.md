@@ -1,7 +1,7 @@
 # AWS Cost Management
 
 ## Overview
-In a production environment, uncontrolled cloud spending can lead to unnecessary financial impact. This lab demonstrates the implementation of AWS Budgets to improve cost visibility and maintain spending awareness across cloud resources.
+This project focuses on setting up AWS Budgets to monitor cloud spending and receive alerts when costs approach the defined limit.
 
 ## Objectives
 - Monitor monthly AWS spending
@@ -20,3 +20,9 @@ In a production environment, uncontrolled cloud spending can lead to unnecessary
 ## Services Used
 - AWS Budgets
 - AWS Billing and Cost Management
+
+## Budget Configuration
+
+![AWS Budget Alert](./screenshots/aws-budget-alert.png)
+
+*Figure 1: AWS Monthly Cost Budget configured successfully with alert thresholds and healthy status.*
