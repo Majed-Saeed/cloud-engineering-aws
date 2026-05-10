@@ -1,49 +1,53 @@
-# IAM Explicit Deny Policy Lab
+# AWS IAM Explicit Deny Policy Lab
 
 ## Overview
-This lab demonstrates how AWS IAM policies work when both Allow and Deny permissions exist.
+This lab demonstrates how AWS IAM policy evaluation works when both Allow and Explicit Deny permissions exist for the same user.
+
+The project focuses on understanding the priority of Explicit Deny in AWS Identity and Access Management (IAM).
+
+---
 
 ## Objectives
-- Create IAM user
-- Assign AmazonS3FullAccess policy
-- Create custom deny policy
-- Prevent bucket deletion using explicit deny
-- Test IAM permission evaluation
+- Understand AWS IAM policy evaluation logic
+- Test Amazon S3 access permissions
+- Apply managed and custom IAM policies
+- Demonstrate how Explicit Deny overrides Allow permissions
 
-## Services Used
-- IAM
+---
+
+## Environment
+- AWS IAM
 - Amazon S3
-
-## Steps Performed
-
-### 1. Created IAM User
-Created IAM user named:
-- Leo
-
-Enabled:
-- AWS Management Console access
+- IAM User: `Leo`
+- AWS Managed Policy: `AmazonS3FullAccess`
 
 ---
 
-### 2. Attached Managed Policy
-Attached AWS managed policy:
-- AmazonS3FullAccess
+## Lab Steps
 
-This allowed full access to Amazon S3 resources.
+### 1. Attached S3 Full Access Policy
+Attached the AWS managed policy `AmazonS3FullAccess` to the IAM user.
 
----
-
-### 3. Created S3 Bucket
-Created S3 bucket:
-- myfirstbucketleoaws
+![S3 Full Access Policy](s3-full-access-policy-attached.png)
 
 ---
 
-### 4. Created Custom IAM Policy
-Created custom policy:
-- DenyDeleteBucket
+### 2. Attempted S3 Bucket Creation
+Initially tested bucket creation permissions.
 
-Policy used:
+![Permission Error](permission-error-create-bucket.png)
+
+---
+
+### 3. Successfully Created S3 Bucket
+Created an Amazon S3 bucket after verifying permissions.
+
+![S3 Bucket Created](s3-bucket-created-successfully.png)
+
+---
+
+### 4. Created Explicit Deny Policy
+Created a custom IAM policy using JSON to explicitly deny the `s3:DeleteBucket` action.
 
 ```json
 {
@@ -59,19 +63,27 @@ Policy used:
 }
 ```
 
----
-
-### 5. Attached Policy to User
-Attached custom deny policy to IAM user:
-- Leo
+![Explicit Deny Policy](explicit-deny-policy-json.png)
 
 ---
 
-### 6. Tested Permissions
-Attempted to delete the S3 bucket.
+## Key Learning
+AWS always prioritizes Explicit Deny over Allow permissions during policy evaluation.
 
-Result:
-- Access denied
+Even when a user has `AmazonS3FullAccess`, the user cannot delete S3 buckets if an Explicit Deny policy exists for `s3:DeleteBucket`.
 
-This demonstrates that:
-- Explicit Deny overrides Allow in AWS IAM policy evaluation.
+---
+
+## Skills Demonstrated
+- AWS IAM
+- IAM Policies
+- Policy Evaluation Logic
+- JSON IAM Policies
+- Amazon S3 Permissions
+- Access Control
+- Cloud Security Fundamentals
+
+---
+
+## Result
+Successfully demonstrated that Explicit Deny overrides Allow permissions in AWS IAM.
