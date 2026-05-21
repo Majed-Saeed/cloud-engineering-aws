@@ -1,57 +1,27 @@
-# AWS IAM Role Integration with EC2 and S3
+# AWS IAM Roles
 
-## Project Overview
-Implemented and validated AWS IAM Role integration with Amazon EC2 to provide secure temporary access to Amazon S3 without using static AWS access keys.
+Centralized IAM role implementations, trust configurations, and access control patterns across AWS environments.
 
-## Architecture
-- Amazon EC2
-- IAM Role
-- AWS STS
-- Amazon S3
-- Default VPC
-- Security Group
+This directory contains role-based authorization configurations, service integrations, and security-focused IAM implementations using AWS native services and temporary credential workflows.
 
-## Implemented Configuration
-- Created IAM Role for EC2 trusted entity
-- Attached `AmazonS3ReadOnlyAccess` managed policy
-- Attached IAM Instance Profile to EC2 instance
-- Launched Amazon Linux EC2 instance
-- Validated temporary credentials using AWS STS
-- Tested S3 authorization and least-privilege enforcement
-
-## Validation Commands
-
-### Verify assumed role identity
-```bash
-aws sts get-caller-identity
-```
-
-### Verify S3 read access
-```bash
-aws s3 ls
-```
-
-### Verify permission restriction
-```bash
-aws s3 mb s3://test-role-bucket-123456789xyz
-```
-
-## Security Validation
-The EC2 instance successfully assumed the IAM role using temporary STS credentials.
-
-Bucket creation was denied as expected because the attached policy only grants read-only access to Amazon S3 resources.
-
-This confirms:
-- Proper IAM Role attachment
-- Successful STS token generation
-- Least privilege enforcement
-- No static credentials exposure
-
-## Key AWS Concepts Demonstrated
-- IAM Roles
-- AssumeRole
-- AWS STS
-- EC2 Instance Profiles
-- Least Privilege Access Model
+## Areas Covered
+- IAM Role Architectures
+- Trust Relationships
+- STS and Temporary Credentials
+- Cross-Service Authorization
+- Least-Privilege Access Design
 - Identity-Based Policies
-- S3 Authorization Controls
+- Service Role Integrations
+- Access Control Validation
+- Permission Delegation
+- Role Assumption Workflows
+
+## AWS Services
+- IAM
+- STS
+- EC2
+- S3
+- Lambda
+- ECS
+- CloudFormation
+```
