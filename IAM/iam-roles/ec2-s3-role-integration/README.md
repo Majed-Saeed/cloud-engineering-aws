@@ -58,4 +58,4 @@ This confirms:
 
 ## Screenshot
 
-![IAM Role Validation](ec2-s3-role-integration/screenshots/ec2-iam-role-s3-readonly-test.png)
+![IAM Role Validation](screenshots/ec2-iam-role-s3-readonly-test.png)
