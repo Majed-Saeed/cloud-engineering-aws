@@ -87,3 +87,41 @@ Even when a user has `AmazonS3FullAccess`, the user cannot delete S3 buckets if 
 
 ## Result
 Successfully demonstrated that Explicit Deny overrides Allow permissions in AWS IAM.
+
+
+
+
+````md
+---
+
+## Important IAM Rule
+
+AWS policy evaluation follows this logic:
+
+```text
+Explicit Deny > Allow
+````
+
+Even if a user has:
+
+* `AdministratorAccess`
+* `AmazonS3FullAccess`
+
+The user still cannot perform actions that are explicitly denied.
+
+Example:
+
+```json
+{
+  "Effect": "Deny",
+  "Action": "s3:DeleteObject",
+  "Resource": "*"
+}
+```
+
+Result:
+
+The user cannot delete S3 objects even with admin permissions.
+
+```
+```
