@@ -1,33 +1,60 @@
-# IAM Roles
+# AWS IAM Role Integration with EC2 and S3
 
-## What is IAM Role
-IAM Role provides temporary permissions to AWS services or users.
+## Project Overview
+Implemented and validated AWS IAM Role integration with Amazon EC2 to provide secure temporary access to Amazon S3 without using static AWS access keys.
 
-## Common Use Cases
-- Lambda Execution Role
-- Cross Account Access
-- Identity Federation
-- Emergency Access
+## Architecture
+- Amazon EC2
+- IAM Role
+- AWS STS
+- Amazon S3
+- Default VPC
+- Security Group
 
-## IAM User vs IAM Role
+## Implemented Configuration
+- Created IAM Role for EC2 trusted entity
+- Attached `AmazonS3ReadOnlyAccess` managed policy
+- Attached IAM Instance Profile to EC2 instance
+- Launched Amazon Linux EC2 instance
+- Validated temporary credentials using AWS STS
+- Tested S3 authorization and least-privilege enforcement
 
-### IAM User
-- Permanent identity
-- Long-term credentials
+## Validation Commands
 
-### IAM Role
-- Temporary credentials
-- Assumed when needed
+### Verify assumed role identity
+```bash
+aws sts get-caller-identity
+```
 
-## Lambda Execution Role
-AWS Lambda can assume a role to access services like:
-- S3
-- CloudWatch
+### Verify S3 read access
+```bash
+aws s3 ls
+```
 
-## Identity Federation
-Users can sign in using:
-- Google
-- Facebook
-- Active Directory
+### Verify permission restriction
+```bash
+aws s3 mb s3://test-role-bucket-123456789xyz
+```
 
-without creating IAM users.
+## Security Validation
+The EC2 instance successfully assumed the IAM role using temporary STS credentials.
+
+Bucket creation was denied as expected because the attached policy only grants read-only access to Amazon S3 resources.
+
+This confirms:
+- Proper IAM Role attachment
+- Successful STS token generation
+- Least privilege enforcement
+- No static credentials exposure
+
+## Key AWS Concepts Demonstrated
+- IAM Roles
+- AssumeRole
+- AWS STS
+- EC2 Instance Profiles
+- Least Privilege Access Model
+- Identity-Based Policies
+- S3 Authorization Controls
+
+## Screenshot
+![IAM Role Validation](ec2-iam-role-s3-readonly-test.png)
