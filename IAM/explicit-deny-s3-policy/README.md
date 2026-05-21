@@ -90,26 +90,17 @@ Successfully demonstrated that Explicit Deny overrides Allow permissions in AWS 
 
 
 
-
-````md
----
-
 ## Important IAM Rule
 
-AWS policy evaluation follows this logic:
+AWS policy evaluation follows a simple rule:
 
-```text
-Explicit Deny > Allow
-````
+**Explicit Deny always overrides Allow**
 
-Even if a user has:
+This means that even if a user has powerful permissions like `AdministratorAccess` or `AmazonS3FullAccess`, they still cannot perform an action that is explicitly denied by another policy.
 
-* `AdministratorAccess`
-* `AmazonS3FullAccess`
+### Example
 
-The user still cannot perform actions that are explicitly denied.
-
-Example:
+If a policy contains this rule:
 
 ```json
 {
@@ -117,11 +108,3 @@ Example:
   "Action": "s3:DeleteObject",
   "Resource": "*"
 }
-```
-
-Result:
-
-The user cannot delete S3 objects even with admin permissions.
-
-```
-```
