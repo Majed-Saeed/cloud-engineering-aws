@@ -1,84 +1,43 @@
-# IAM Role AssumeRole Lab (AWS)
+# AWS IAM AssumeRole Lab
 
-## Overview
-
-This lab demonstrates how IAM Roles work in AWS using `AssumeRole`.
-
-The goal was to understand:
-
-- Difference between IAM Users and IAM Roles
-- Temporary permissions using STS
-- Trust relationships
-- Role-based access control
-
----
-
-# Architecture
+## Architecture
 
 ```text
-IAM User (junior-admin)
-        │
-        ▼
-AssumeRole (STS)
-        │
-        ▼
-IAM Role (PowerRole)
-        │
-        ▼
-Temporary Administrator Permissions
++-------------------+
+|   junior-admin    |
+|    IAM User       |
++---------+---------+
+          |
+          | AssumeRole
+          v
++-------------------+
+|     PowerRole     |
+| AdministratorRole |
++---------+---------+
+          |
+          v
++-------------------+
+|   AWS Resources   |
+|   EC2 / IAM / S3  |
++-------------------+
 ```
 
 ---
 
-# What I Created
+# Workflow
 
-## IAM User
-
-User:
 ```text
-junior-admin
-```
-
-Permissions:
-```text
-No administrative permissions
-```
-
-Purpose:
-- Simulate a low-privileged user account
-
-Screenshot:
-```text
-junior-admin-review-page.png
-```
-
----
-
-## IAM Role
-
-Role:
-```text
-PowerRole
-```
-
-Attached Policy:
-```text
-AdministratorAccess
-```
-
-Purpose:
-- Provide temporary elevated permissions
-
-Screenshot:
-```text
-trust-policy-and-admin-policy.png
+1. Create restricted IAM user
+2. Deny EC2 access
+3. Create PowerRole
+4. Add trust policy
+5. Switch Role
+6. Get temporary admin access
 ```
 
 ---
 
 # Trust Policy
-
-The role trust policy allows only the `junior-admin` user to assume the role.
 
 ```json
 {
@@ -97,106 +56,22 @@ The role trust policy allows only the `junior-admin` user to assume the role.
 
 ---
 
-# Testing Process
+# Screenshots
 
-## Before AssumeRole
+## IAM User Creation
+![User](screenshots/junior-admin-create.png)
 
-Logged in as:
-```text
-junior-admin
-```
+## Access Denied
+![Denied](screenshots/ec2-access-denied-junior-admin.png)
 
-Result:
-```text
-AccessDenied when accessing EC2
-```
-
-Screenshot:
-```text
-ec2-access-denied-junior-admin.png
-```
-
----
+## Trust Policy + Admin Policy
+![Policy](screenshots/trust-policy-and-admin-policy.png)
 
 ## Switch Role
+![Switch](screenshots/switch-role-powerrole.png)
 
-Role used:
-```text
-PowerRole
-```
-
-Display name:
-```text
-AdminMode
-```
-
-Screenshot:
-```text
-switch-role-powerrole.png
-```
-
----
-
-## After AssumeRole
-
-Result:
-- Full EC2 access
-- Temporary administrator permissions
-
-Screenshot:
-```text
-adminmode-console-home.png
-```
-
----
-
-## After Exiting Role
-
-Returned to:
-```text
-junior-admin
-```
-
-Result:
-```text
-AccessDenied restored
-```
-
-Screenshot:
-```text
-ec2-access-denied-junior-admin.png
-```
-
----
-
-# Key Concepts Learned
-
-## IAM User
-Permanent identity for a person or application.
-
----
-
-## IAM Role
-Temporary identity with specific permissions.
-
----
-
-## AssumeRole
-Allows a user or service to temporarily obtain permissions from a role.
-
----
-
-## STS (Security Token Service)
-Provides temporary credentials when assuming a role.
-
----
-
-# Security Benefits
-
-- No permanent admin access
-- Temporary elevated permissions
-- Better auditing and access control
-- Reduced security risk
+## Admin Mode
+![Admin](screenshots/adminmode-console-home.png)
 
 ---
 
@@ -204,8 +79,10 @@ Provides temporary credentials when assuming a role.
 
 - IAM Users
 - IAM Roles
-- Trust Policies
 - AssumeRole
 - AWS STS
-- Permission Testing
-- Access Control Validation
+- Trust Policies
+- Temporary Credentials
+- RBAC
+- Least Privilege
+```
