@@ -119,7 +119,7 @@ Implemented secure temporary privilege escalation using IAM Roles and AWS STS.
 - Temporary Credentials
 - RBAC
 - Least Privilege
-
+- Security Automation
 ---
 
 ## EC2 + IAM Role Integration
