@@ -29,4 +29,3 @@ AWS CloudTrail is a logging and auditing service that records API activity and a
 - CloudTrail is enabled by default with 90 days of event history.
 - Data Events must be explicitly enabled.
 - Global services such as IAM, STS, and CloudFront generate global service events.
-- Log delivery is not real-time and may take several minutes.
