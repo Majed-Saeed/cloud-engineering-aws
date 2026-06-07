@@ -39,3 +39,8 @@ Implemented an enhanced CloudTrail deployment focused on auditability, log prote
 ### Services
 
 AWS CloudTrail • AWS KMS • Amazon S3 • Amazon CloudWatch Logs • AWS IAM
+### CloudTrail Trail
+
+<p align="center">
+  <img src="screenshots/aws-cloudtrail-management-trail.png" alt="AWS CloudTrail Management Trail" width="900">
+</p>
