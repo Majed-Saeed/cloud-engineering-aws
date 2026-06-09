@@ -24,4 +24,5 @@ This directory contains role-based authorization configurations, service integra
 - Lambda
 - ECS
 - CloudFormation
+- CloudWatch
 ```
