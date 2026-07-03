@@ -7,7 +7,7 @@
 
 ## Notes
 - Bucket names must be globally unique
-- Default settings used (private, no versioning)
+
 
 ## Screenshots
 
