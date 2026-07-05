@@ -2,7 +2,7 @@
 
 Implemented an enhanced CloudTrail deployment focused on auditability, log protection, and operational visibility.
 
-### Configuration
+## Configuration
 
 - Multi-Region CloudTrail Trail
 - Amazon S3 Log Storage
