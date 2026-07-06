@@ -25,4 +25,5 @@ This directory contains role-based authorization configurations, service integra
 - ECS
 - CloudFormation
 - CloudWatch
+- SNS
 ```
