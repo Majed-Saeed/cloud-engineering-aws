@@ -9,7 +9,7 @@ Implemented an enhanced CloudTrail deployment focused on auditability, log prote
 - AWS KMS Encryption
 - Log File Integrity Validation
 - CloudWatch Logs Integration
-- Dedicated IAM Role for Log Delivery
+- Dedicated (IAM Role) for Log Delivery
 
 ### Architecture
 
